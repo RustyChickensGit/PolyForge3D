@@ -1,0 +1,25 @@
+CHANGELOG
+Date: 2024-12-22
+Project: PolyForge3D
+
+Changes:
+Renderer Ownership
+Renderer now owns wgpu::Instance, removing lifetime dependencies.
+Simplified Renderer by removing lifetime parameters.
+Updated Renderer::new to reflect ownership of wgpu::Instance.
+
+Error Handling
+Added PolyForgeError with variants:
+RendererNotInitialized for uninitialized renderer issues.
+SurfaceCreationFailed(CreateSurfaceError) to wrap wgpu surface errors.
+Other(String) for general error handling.
+Updated create_window_surface to propagate errors using map_err.
+
+Surface Creation
+Resolved lifetime issues with wgpu::Surface.
+Refactored create_window_surface to properly store surfaces without conflicts.
+Removed improper use of the ? operator on non-Result values.
+
+Next Steps
+Resolve Lifetime Issues:
+Investigate and align lifetimes between Renderer, wgpu::Instance, and wgpu::Surface.
