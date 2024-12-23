@@ -3,10 +3,12 @@ use winit::window::Window;
 
 pub struct Renderer {
     pub instance: Instance, // GPU instance
+    pub device: wgpu::Device, 
+    pub queue: wgpu::Queue,
 }
 
 impl Renderer {
-    pub fn new() -> Self {
+    pub async fn new() -> Self {
         let instance_descr = wgpu::InstanceDescriptor {
             backends:wgpu::Backends::PRIMARY,
             flags:wgpu::InstanceFlags::VALIDATION,
@@ -14,10 +16,39 @@ impl Renderer {
             gles_minor_version:wgpu::Gles3MinorVersion::Automatic,
         };
         let instance = Instance::new(instance_descr);
-        Self { instance }
+
+        let request_adapter_options = wgpu::RequestAdapterOptions {
+            // 0 = None; power usage not considered when choosing an adapater
+            // 1 = LowPower; Adapater that uses the least possible power. 
+            // 2 = HighPerformance; Adapter w/ highest performance
+            power_preference:wgpu::PowerPreference::None,
+            force_fallback_adapter: false,
+            compatible_surface:None,
+        };
+
+        let adapter = instance.request_adapter(&request_adapter_options)
+            .await.expect("Failed to find a compatible GPU adapter");
+
+        let (device, queue) = adapter.request_device(
+            &wgpu::DeviceDescriptor {
+                label: None,
+                required_features: wgpu::Features::empty(),
+                required_limits: wgpu::Limits::default(),
+                memory_hints: wgpu::MemoryHints::Performance,
+            },
+            None,
+        ).await.expect("Failed to create device and queue");
+
+        Self { 
+            instance,
+            device,
+            queue,
+         }
     }
 
     pub fn create_surface(&self, window: &Window) {
         self.instance.create_surface(window);
     }
+
+    
 }

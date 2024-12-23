@@ -48,8 +48,8 @@ impl ApplicationHandler for PolyForge3D {
 }
 
 impl PolyForge3D {
-    pub fn new() -> Self {
-        let renderer = renderer::Renderer::new();
+    pub async fn new() -> Self {
+        let renderer = renderer::Renderer::new().await;
         Self {
             window: None,
             renderer: Some(renderer),
