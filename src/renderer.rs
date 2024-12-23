@@ -1,8 +1,10 @@
 use wgpu::{Instance};
-use winit::window::Window;
+
+// renderer.rs is responsible for GPU-related resource management (Device, Queue, etc)
+
 
 pub struct Renderer {
-    pub instance: Instance, // GPU instance
+    pub instance: wgpu::Instance, // GPU instance
     pub device: wgpu::Device, 
     pub queue: wgpu::Queue,
 }
@@ -15,6 +17,7 @@ impl Renderer {
             dx12_shader_compiler:wgpu::Dx12Compiler::default(),
             gles_minor_version:wgpu::Gles3MinorVersion::Automatic,
         };
+
         let instance = Instance::new(instance_descr);
 
         let request_adapter_options = wgpu::RequestAdapterOptions {
@@ -45,10 +48,4 @@ impl Renderer {
             queue,
          }
     }
-
-    pub fn create_surface(&self, window: &Window) {
-        self.instance.create_surface(window);
-    }
-
-    
 }

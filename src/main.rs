@@ -2,6 +2,7 @@ use futures::executor::block_on;
 
 mod window;
 mod renderer;
+mod polyforge_errors;
 
 
 // Launch PolyForge3D w/ Ok(T), Err(r)
